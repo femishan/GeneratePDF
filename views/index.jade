@@ -1,0 +1,350 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title Patient Questionnaire
+    style.
+      html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Sackers Gothic Std';
+      font-weight: 500;
+      font-size: 7px;
+      background: rgb(241,241,241);
+      -webkit-print-color-adjust: exact;
+      box-sizing: border-box;
+      }
+      .page {
+      position: relative;
+      height: 180mm;
+      width: 140mm;
+      display: block;
+      background: white;
+      page-break-after: auto;
+      margin: 50px;
+      overflow: hidden;
+      }
+      .page2 {
+      position: relative;
+      height: 220mm;
+      width: 140mm;
+      display: block;
+      background: white;
+      page-break-after: auto;
+      margin: 50px;
+      overflow: hidden;
+      }
+      .page3 {
+      position: relative;
+      height: 200mm;
+      width: 140mm;
+      display: block;
+      background: white;
+      page-break-after: auto;
+      margin: 50px;
+      overflow: hidden;
+      }
+      .page4 {
+      position: relative;
+      height: 220mm;
+      width: 140mm;
+      display: block;
+      background: white;
+      page-break-after: auto;
+      margin: 50px;
+      overflow: hidden;
+      }
+      @media print {
+      body {
+      background: white;
+      }
+      .page2 {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      }
+      }
+      @media print {
+      body {
+      background: white;
+      }
+      .page3 {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      }
+      }
+      @media print {
+      body {
+      background: white;
+      }
+      .page4 {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      }
+      }
+      @media print {
+      body {
+      background: white;
+      }
+      .page {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      }
+      }
+      .page.first {
+      border-left: 5px solid green;
+      }
+      .bottom {
+      position: absolute;
+      left: 5mm;
+      right: 5mm;
+      bottom: 5mm;
+      }
+      .group {
+      margin-top: 3mm;
+      }
+      .line {
+      color: white;
+      position: relative;
+      }
+      .center {
+      text-align: center;
+      }
+      .logo {
+      position: relative;
+      width: 80%;
+      left: 10%;
+      top: 15%;
+      }
+      .roundCorner1 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 32mm;
+      border-width:1px;
+      }
+      .roundCorner2 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 38mm;
+      border-width:1px;
+      }
+      .roundCorner3 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 24mm;
+      border-width:1px;
+      }
+      .roundCorner4 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 200mm;
+      border-width:1px;
+      }
+      .roundCorner6 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 60mm;
+      border-width:1px;
+      }
+      .roundCorner5 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 120mm;
+      border-width:1px;
+      }
+      .roundCorner7 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 100mm;
+      border-width:1px;
+      }
+      .roundCorner8 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 3mm;
+      border-width:1px;
+      background-color:#d3d3d3;
+      }
+      .roundCorner9 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 22mm;
+      border-width:1px;
+      }
+      .roundCorner10 {
+      border-radius: 10px;
+      border: 1px solid grey;
+      padding: 10px;
+      width: 120mm;
+      height: 28mm;
+      border-width:1px;
+      }
+      .left {
+      font-size:8;
+      float: left;
+      }
+      .right {
+      border-bottom: 1px dotted #888;
+      margin-right:15px;
+      margin-bottom:4px;
+      font-size:8;
+      }
+      .row {
+      margin-bottom:4px;
+      }
+      table {
+      table-layout:fixed;
+      border-collapse: collapse;
+      }
+      table, th, td {
+      border: 1px solid #888;
+      font-size:8;
+      }
+      table.patients-table {
+      width: 450px;
+      table-layout:fixed;
+      text-align:left;
+      vertical-align:top;
+      padding: 5px;
+      }
+      table.patients-table th.big {
+      width: 16px;
+      word-wrap:break-word;
+      }
+      table.patients-table td.big {
+      width: 16px;
+      word-wrap:break-word;
+      }
+      table.patients-table th.small {
+      width: 6px;
+      word-wrap:break-word;
+      }
+      table.patients-table td.small {
+      width: 6px;
+      word-wrap:break-word;
+      }
+      table.allergy-table {
+      width: 450px;
+      table-layout:fixed;
+      text-align:left;
+      vertical-align:top;
+      padding: 5px;
+      }
+      table.allergy-table thead th:last-child {
+      border-radius: 10px 10px 0 0;
+      }
+      table.allergy-table th.big {
+      width: 16px;
+      word-wrap:break-word;
+      }
+      table.allergy-table td.big {
+      width: 16px;
+      word-wrap:break-word;
+      }
+      table.allergy-table th.small {
+      width: 6px;
+      word-wrap:break-word;
+      }
+      table.allergy-table td.small {
+      width: 6px;
+      word-wrap:break-word;
+      }
+      table.allergy-table tr {
+      line-height: 25px;
+      }
+  body
+    .page
+      figure#logo(style='margin-left:15px;margin-top:50px')
+        img#logo-main(src=' data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOkAAABGCAYAAAApfbPYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkNBQzc3MTcyNjMyOTExRTM4QTM1RTZGNTg4OUEwRkMyIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkNBQzc3MTczNjMyOTExRTM4QTM1RTZGNTg4OUEwRkMyIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6Q0FDNzcxNzA2MzI5MTFFMzhBMzVFNkY1ODg5QTBGQzIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6Q0FDNzcxNzE2MzI5MTFFMzhBMzVFNkY1ODg5QTBGQzIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7btQXOAAAWGklEQVR42uxdCXhV1bVe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', style='width: 100px;', alt='Home')
+      p(style='font-size:18;color:grey;margin-top:10px;margin-left:15px;margin-bottom:10px;border-bottom: 1px grey solid;') Patient pre-admission questionnaire
+      p(style='font-size:10;color:grey;margin-top:0px;margin-left:15px;margin-bottom:5px;')
+        | To prepare for your forthcoming admission to hospital,please complete this questionnaire.The
+        br
+        |        information you give us will assist in providing appropriate care and help us to meet any special
+        br
+        |        needs you may have.If we do not have this information before your admission date,there may be
+        br
+        |         a risk of your procedure being postponed.
+      p(style='font-size:10;color:black;margin-top:0px;margin-left:15px;margin-bottom:10px;')
+        | Once completed,please return it as soon as possible.
+      .roundCorner1(style='margin-left:15px;margin-right:15px;')
+        div(style='font-size:8;margin-bottom:4px;')
+          | Patient's Name: {{patientName}}.................................................................................................
+        div(style='font-size:8;margin-bottom:4px;color:grey;')
+          | Address:.{{addressLine1}}.......................................................................................................
+        div(style='font-size:8;margin-bottom:4px;color:grey;')
+          | {{addressLine2}}................................................................................................................
+        div(style='font-size:8;margin-bottom:4px;color:grey;')
+          | {{addressLine3}}....................................................................................Post Code:{{postCode}}......
+        div(style='font-size:8;margin-bottom:8px;')
+          | Contact Telephone nos:..{{contactTelephoneNumbers}}.............................................................................
+        div(style='font-size:8;margin-bottom:5px;margin-top:8px;border-bottom: 1px grey solid;')
+        div(style='font-size:8;margin-bottom:4px;') For Hospital Use Only
+        div(style='font-size:8;margin-bottom:4px;')
+          | Consultant:.......................................................................................Hospital No:..................
+      .roundCorner2(style='margin-left:15px;margin-right:15px;margin-top:10px;')
+        div(style='font-size:8;') Please list any medicines you are taking 
+        div(style='font-size:6;')
+          | (This includes contraceptive pill,sleeping pills,
+          | pain killers,aspirin,homeopathic medicines,skin patchers or inhalers)
+        div(style='font-size:8;border-bottom: 1px grey solid;')
+        div(style='font-size:8;margin-bottom:8px; border-bottom: 1px dotted #888')
+          | {{medicineListLine1}}
+        div(style='font-size:8;margin-bottom:8px; border-bottom: 1px dotted #888')
+          | {{medicineListLine2}}
+        div(style='font-size:8;margin-bottom:8px; border-bottom: 1px dotted #888')
+          | {{medicineListLine3}}
+        div(style='font-size:8;margin-bottom:8px; border-bottom: 1px dotted #888')
+          | {{medicineListLine4}}
+        div(style='font-size:8;margin-bottom:8px; border-bottom: 1px dotted #888')
+          | {{medicineListLine5}}
+        div(style='font-size:8;margin-bottom:8px; border-bottom: 1px dotted #888')
+          | {{medicineListLine6}}
+        div(style='font-size:8;margin-bottom:8px;font-weight: bold;width: 50%;\
+        margin: 0 auto; ')
+          | Please bring these with you
+      .roundCorner3(style='margin-left:15px;margin-right:15px;margin-top:10px;')
+        div(style='font-size:8;')
+          | General Anastesia/sedation - important information.If you are having a general anaesthetic or intravenous
+          br
+          |  sedation for your procedure we strongly recommend that you arrange for a resposible adult to accompany you home and stay 
+          br
+          |               with you for 24hrs after your procedure.We also recommend that you arrange to be collected by car or taxi,as it 
+          br
+          |               is inadvisable for you to drive or ride a motorcycle for 24hrs after your procedure.
+        div(style='font-size:8;border-bottom: 1px grey solid;')
+        div(style='font-size:8;margin-bottom:8px;')
+          | Will there be a responsible, able person to care for you
+          | for the first 24 hours?  {{responsiblePerson}} 
+          | Yes
+          input.form-control(type='checkbox', {{responsiblepersonyesflag}}='')
+          |               No
+          input.form-control(type='checkbox', {{responsiblepersonnoflag}}='')
+        div(style='font-size:8;margin-bottom:8px;')
+          | Can someone collect you from the hospital? {{responsiblePersonCollect}}
+          | Yes
+          input.form-control(type='checkbox', {{responsiblepersoncollectyesflag}}='')
+          |               No
+          input.form-control(type='checkbox', {{responsiblepersoncollectnoflag}}='')
+    
