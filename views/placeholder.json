@@ -1,0 +1,21 @@
+{
+"patientName":"Jhon Smith",
+"postCode":"MK12 0JK",
+"addressLine1":"71 Barkyby Road",
+"addressLine2":"Leicester",
+"addressLine3":"Leicestershire",
+"contactTelephoneNumbers":"07782348932",
+"medicineListLine1":"medicineNames",
+"medicineListLine2":"medicineListLine2",
+"medicineListLine3":"medicineListLine3",
+"medicineListLine4":"medicineListLine4",
+"medicineListLine5":"medicineListLine5",
+"medicineListLine6":"medicineListLine6",
+"responsiblepersoncollect":"responsiblePersonCollect",
+"responsibleperson":"responsiblePerson",
+"responsiblepersonyesflag":"checked",
+"responsiblePersonnoflag":"No",
+"responsiblepersoncollectyesflag":"checked",
+"responsiblepersoncollectnoflag":"No"
+}
+         
