@@ -14,10 +14,11 @@ var jsonParser = bodyParser.json();
 var Base64 = require('base64-stream');
 var stream = require('stream');
 var app = express();
-var fileUploadtime = (new Date).getTime();
+
 //var pdfFileName =  "PdfDocument_" + fileUploadtime + ".pdf"
 var AUTH_TOKEN = '';
 // var credentials = require('./credentials')['Object-Storage'][0].credentials; 
+
 // Create a config object
 var config = {};
 // Specify Openstack as the provider
@@ -30,13 +31,13 @@ config.useServiceCatalog = true;
 // true for applications running inside Bluemix, otherwise false
 config.useInternal = true;
 // projectId as provided in your Service Credentials
-config.tenantId = '50830c200bd64fa7b71ee2aa102f8ac6';
+config.tenantId = 'e02bdfeae6734f479cfc433fca4d91d0';
 // userId as provided in your Service Credentials
-config.userId = '32711e214dfd4ce494109a37587209c7';
+config.userId = 'c1caef7b03d84e95b49257f645750355';
 // username as provided in your Service Credentials
-config.username = 'admin_cd4eec0a7d8a07bd81cb9e18bae340ed89fb3ef4';
+config.username = 'admin_fd3162f4b7886af79f1c4920047e662e9510d2d8';
 // password as provided in your Service Credentials
-config.password = 'T!diyH!2lyW2]]S4';
+config.password = 'e5ryFv/7Yf^9O}&H';
 var API_ENDPOINT = ['https://lon.objectstorage.open.softlayer.com/v1/AUTH_', config.tenantId].join('');
 
 config.auth = {
@@ -48,14 +49,14 @@ config.auth = {
         ],
         "password": {
             "user": {
-                "id": "32711e214dfd4ce494109a37587209c7", //userId
-                "password": "T!diyH!2lyW2]]S4" //userPassword
+                "id": "c1caef7b03d84e95b49257f645750355", //userId
+                "password": "e5ryFv/7Yf^9O}&H" //userPassword
             }
         }
     },
     "scope": {
         "project": {
-            "id": "50830c200bd64fa7b71ee2aa102f8ac6" //projectId
+            "id": "e02bdfeae6734f479cfc433fca4d91d0" //projectId
         }
     }
 };
@@ -110,24 +111,55 @@ router.get('/', function(req, res, next) {
 });
 
 /*router.get('/generatepdf', function(req, res,next) {
-   res.send('respond with a resource');
+	 res.send('respond with a resource');
 });*/
+router.post('/GetPDFMetaData', function(req, res) {
+   var pdfContainerName = req.body.pdfcontainername;
+  var pdfFileName = req.body.pdffilename;
+//var container_name = "SecciDocuments";
+  getAuthToken().then(function(token) {
+    console.log(token);
+    request({
+      url: API_ENDPOINT + '/' + pdfContainerName + '/'+pdfFileName,
+      method: 'head',
+      headers: {
+        'X-Auth-Token': token
+      }
+    }, function (error, response, body) {
+        // OpenStack API returns a 201 to indicate success
+        if (!error ) {
+          res.send(response.headers);
+        }
+    })
+  });
+});
+
 
 //router.get('/generatepdf/:templatecontainername/:templatename/:pdfcontainername/:pdffilename', function(req, res) {
   router.post('/generatepdf', function(req, res) {
   //Read the Template From the Container
-  var template_container_name = req.body.templatecontainername;
-  var pdf_container_name = req.body.pdfcontainername;
-  var template_name = req.body.templatename;
-  var pdf_file_Name = req.body.pdffilename;
-  var business_data = req.body.businessdata;
-   var pdfFileName =  pdf_file_Name+"_"+ fileUploadtime + ".pdf"
-   generatepdfdoc(template_container_name, pdf_container_name, template_name, pdfFileName, business_data); 
-   console.log("result: "+pdf_container_name+" / "+pdfFileName);
-   res.send(pdfFileName);
+  var templateContainerName = req.body.templatecontainername;
+  var pdfContainerName = req.body.pdfcontainername;
+  var templateName = req.body.templatename;
+  var pdfFileName = req.body.pdffilename;
+  var businessData = req.body.businessdata;
+  var reference = req.body.reference;
+  var brokerId = req.body.brokerId;
+  var customerId = req.body.customerId;
+  var digitalRefId = req.body.digitalRefId;
+  var brokerUserId = req.body.brokerUserId;
+  var isUploaded = req.body.isUploaded;
+  var uploadedBy = req.body.uploadedBy;
+  var uploadedDate = req.body.uploadedDate;
+  console.log("business_data: "+businessData);
+  var fileUploadtime = (new Date).getTime();
+  var pdfFileName =  pdfFileName+"_"+ fileUploadtime + ".pdf"
+  generatepdfdoc(templateContainerName, pdfContainerName, templateName, pdfFileName, businessData,reference, brokerId, customerId, digitalRefId, brokerUserId, isUploaded, uploadedBy, uploadedDate); 
+  console.log("result: "+pdfFileName);
+  res.send(pdfFileName);
 });
 
-function generatepdfdoc(template_container_name, pdf_container_name, template_name, pdf_file_Name, placeholder ){ 
+function generatepdfdoc(template_container_name, pdf_container_name, template_name, pdf_file_Name, placeholder,reference, brokerId, customerId, digitalRefId, brokerUserId, isUploaded, uploadedBy, uploadedDate){ 
     //business_data
     var placeholderJson = JSON.parse(placeholder);
     console.log("placeholderJson: "+ placeholder);
@@ -147,7 +179,7 @@ function generatepdfdoc(template_container_name, pdf_container_name, template_na
               var tempKey = '{{'+key+'}}';
               var tempValue = placeholderJson[key];
               body = replace(body,tempKey, tempValue);   
-               console.log(body);
+               //console.log(body);
             }
             var promise = new Promise(function(resolve, reject) {
               pdf.create(body).toBuffer(function(err, buffer){ 
@@ -157,6 +189,7 @@ function generatepdfdoc(template_container_name, pdf_container_name, template_na
               var pdfFileName =  pdf_file_Name; //+"_"+ fileUploadtime + ".pdf"
               var documentType = pdf;
               var fileContext = "";
+
     getAuthToken().then(function(token) {
       getStringAsStream(bufferString).pipe(Base64.decode()).pipe(request({
         url: API_ENDPOINT + '/' + pdf_container_name + '/' + pdfFileName,
@@ -165,7 +198,15 @@ function generatepdfdoc(template_container_name, pdf_container_name, template_na
           'X-Auth-Token': token,
           'Content-Type': 'application/pdf',
           'X-Object-Meta-FileContext': fileContext,
-          'X-Object-Meta-DocumentType': documentType
+          'X-Object-Meta-DocumentType': 'pdf',
+          'X-Object-Meta-Reference': reference,
+          'X-Object-Meta-BrokerId': brokerId,
+          'X-Object-Meta-CustomerId': customerId,
+          'X-Object-Meta-DigitalReferenceId': digitalRefId,
+          'X-Object-Meta-BrokerUserId': brokerUserId,
+          'X-Object-Meta-IsUploaded': isUploaded,
+          'X-Object-Meta-UploadedBy': uploadedBy,
+          'X-Object-Meta-DocumentType': uploadedDate
         }
       }, function(error, response, body) {
           if(!error && response.statusCode == 201) {         
@@ -230,7 +271,7 @@ function storePDF(pdfDoc, pdf_container_name, pdf_file_Name ){
 }
 
 
-app.get('/container/:container_name/object/:object_name', function(req, res) {
+router.get('/container/:container_name/object/:object_name', function(req, res) {
   var container_name = req.params.container_name;
   var object_name = req.params.object_name;
 

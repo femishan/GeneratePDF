@@ -16,8 +16,6 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var app = express();
 var AUTH_TOKEN = '';
-
-//var buffer = new Buffer();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
@@ -27,6 +25,47 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
+/*
+var getAuthToken = function() {
+  if(AUTH_TOKEN === '') {
+    return new Promise(function(resolve, reject) {
+      var authUrl = credentials['auth_url'];
+      var authInfo = {
+        auth: {
+          identity: {
+            methods: ['password'],
+            password: {
+              user: {
+                id: credentials.userId,
+                password: credentials.password
+              }
+            }
+          },
+          scope: {
+            project: {
+              id: credentials.projectId
+            }
+          }
+        }
+      }
+      request(
+        {
+          url: authUrl + '/v3/auth/tokens',
+          method: 'post',
+          body: authInfo,
+          json: true
+        }, function(error, response, body) {
+          if(error)
+            reject(error);
+          else {
+            resolve(response.headers['x-subject-token']);
+          }
+      });
+    });
+  } else {
+    return AUTH_TOKEN;
+  }
+}*/
 
 // Create a config object
 var config = {};
@@ -40,13 +79,13 @@ config.useServiceCatalog = true;
 // true for applications running inside Bluemix, otherwise false
 config.useInternal = true;
 // projectId as provided in your Service Credentials
-config.tenantId = '50830c200bd64fa7b71ee2aa102f8ac6';
+config.tenantId = 'e02bdfeae6734f479cfc433fca4d91d0';
 // userId as provided in your Service Credentials
-config.userId = '32711e214dfd4ce494109a37587209c7';
+config.userId = 'c1caef7b03d84e95b49257f645750355';
 // username as provided in your Service Credentials
-config.username = 'admin_cd4eec0a7d8a07bd81cb9e18bae340ed89fb3ef4';
+config.username = 'admin_fd3162f4b7886af79f1c4920047e662e9510d2d8';
 // password as provided in your Service Credentials
-config.password = 'T!diyH!2lyW2]]S4';
+config.password = 'e5ryFv/7Yf^9O}&H';
 var API_ENDPOINT = ['https://lon.objectstorage.open.softlayer.com/v1/AUTH_', config.tenantId].join('');
 
 config.auth = {
@@ -58,14 +97,14 @@ config.auth = {
         ],
         "password": {
             "user": {
-                "id": "32711e214dfd4ce494109a37587209c7", //userId
-                "password": "T!diyH!2lyW2]]S4" //userPassword
+                "id": "c1caef7b03d84e95b49257f645750355", //userId
+                "password": "e5ryFv/7Yf^9O}&H" //userPassword
             }
         }
     },
     "scope": {
         "project": {
-            "id": "50830c200bd64fa7b71ee2aa102f8ac6" //projectId
+            "id": "e02bdfeae6734f479cfc433fca4d91d0" //projectId
         }
     }
 };
@@ -107,7 +146,7 @@ var getAuthToken = function() {
       });
     });
   } else {
-    console.log("AUTH_TOKEN"+AUTH_TOKEN);
+    //console.log("AUTH_TOKEN"+AUTH_TOKEN);
     return AUTH_TOKEN;
 
   }
@@ -115,37 +154,62 @@ var getAuthToken = function() {
 
 app.post('/generatepdf', function(req, res) {
   //Read the Template From the Container
-  var template_container_name = req.body.templatecontainername;
-  var pdf_container_name = req.body.pdfcontainername;
-  var template_name = req.body.templatename;
-  var pdf_file_Name = req.body.pdffilename;
-  var business_data = req.body.businessdata;
-  console.log("business_data: "+business_data);
+  var templateContainerName = req.body.templatecontainername;
+  var pdfContainerName = req.body.pdfcontainername;
+  var templateName = req.body.templatename;
+  var pdfFileName = req.body.pdffilename;
+  var businessData = req.body.businessdata;
+  var reference = req.body.reference;
+  var brokerId = req.body.brokerId;
+  var customerId = req.body.customerId;
+  var digitalRefId = req.body.digitalRefId;
+  var brokerUserId = req.body.brokerUserId;
+  var isUploaded = req.body.isUploaded;
+  var uploadedBy = req.body.uploadedBy;
+  var uploadedDate = req.body.uploadedDate;
   var fileUploadtime = (new Date).getTime();
-   var pdfFileName =  pdf_file_Name+"_"+ fileUploadtime + ".pdf"
-   generatepdfdoc(template_container_name, pdf_container_name, template_name, pdfFileName, business_data); 
-   console.log("result: "+pdfFileName);
-   res.send(pdfFileName);
+  var pdfFileName =  pdf_file_Name+"_"+ fileUploadtime + ".pdf"
+  generatepdfdoc(templateContainerName, pdfContainerName, templateName, pdfFileName, businessData,reference, brokerId, customerId, digitalRefId, brokerUserId, isUploaded, uploadedBy, uploadedDate); 
+  res.send(pdfFileName);
 });
-//var temp = '{"patientName":"Jhon Smith","postCode":"MK12 0JK","addressLine1":"71 Barkyby Road","addressLine2":"Leicester","addressLine3":"Leicestershire","contactTelephoneNumbers":"07782348932","medicineListLine1":"medicineNames","medicineListLine2":"medicineListLine2","medicineListLine3":"medicineListLine3","medicineListLine4":"medicineListLine4","medicineListLine5":"medicineListLine5","medicineListLine6":"medicineListLine6","responsiblepersoncollect":"responsiblePersonCollect","responsibleperson":"responsiblePerson","responsiblepersonyesflag":"checked","responsiblepersonnoflag":"No","responsiblepersoncollectyesflag":"checked","responsiblepersoncollectnoflag":"No"}';
-//generatepdfdoc('PdfTemplate', 'PdfDocuments','sampletemplate', 'pdf_file_Name', temp); 
 
-function generatepdfdoc(template_container_name, pdf_container_name, template_name, pdf_file_Name, placeholder){ 
+var fileUploadtime = (new Date).getTime()
+var pdf_file_Name =  "Sample_"+ fileUploadtime + ".pdf"
+var temp = '{"creditorName":"Secure Trust Bank", "tradingAs":"V12 Retail Finance","creditorAddress":"One Arleston Way,Sloihull,West Midlands,B90 4LH","creditIntermediaryName":"Edinburgh Bicycle Co-Operative Limited","creditIntermediaryAddress":"8 Alvanley Terrace,Whitehouse Loan,Edinburgh","creditType":"Fixed sum loan Agreement", "creditAmount":"&euro; 360.00", "duration":"duration", "CompanyRegistrationNumber":"541132", "FinancialServicesRegisterNumber":"204550","telephone":"08000234567","email":"complaint.info@financial-ombudsman.org.uk", "website":"www.prolifics.com"}';
+//'{"patientName":"Jhon Smith","postCode":"MK12 0JK","addressLine1":"71 Barkyby Road","addressLine2":"Leicester","addressLine3":"Leicestershire","contactTelephoneNumbers":"07782348932","medicineListLine1":"medicineNames","medicineListLine2":"medicineListLine2","medicineListLine3":"medicineListLine3","medicineListLine4":"medicineListLine4","medicineListLine5":"medicineListLine5","medicineListLine6":"medicineListLine6","responsiblepersoncollect":"responsiblePersonCollect","responsibleperson":"responsiblePerson","responsiblepersonyesflag":"checked","responsiblepersonnoflag":"No","responsiblepersoncollectyesflag":"checked","responsiblepersoncollectnoflag":"No"}';
+//generatepdfdoc('PdfTemplate', 'SecciDocuments','secciTemplate', pdf_file_Name, temp, 'ref123456', 'broker001', 'customer001', 'digitalRef001', 'brokerUserJhon', 'true', 'Femina Shan', '1March2016', res); 
+//app.post('/GetPDFMetaData', function(req, res) {
+   var pdfContainerName = "SecciDocuments";//req.body.pdfcontainername;
+  var pdfFileName = "SecciPdf_1469180593478.pdf";//req.body.pdffilename;
+//var container_name = "SecciDocuments";
+  getAuthToken().then(function(token) {
+    console.log(token);
+    request({
+      url: API_ENDPOINT + '/' + pdfContainerName + '/'+pdfFileName,
+      method: 'head',
+      headers: {
+        'X-Auth-Token': token
+      }
+    }, function (error, response, body) {
+        // OpenStack API returns a 201 to indicate success
+        if (!error ) {
+           console.log(response.headers);
+          //res.send(response.headers);
+        }
+    })
+  });
+//});
+
+function generatepdfdoc(template_container_name, pdf_container_name, template_name, pdf_file_Name, placeholder,reference, brokerId, customerId, digitalRefId, brokerUserId, isUploaded, uploadedBy, uploadedDate){ 
     //business_data
     var placeholderJson = JSON.parse(placeholder);
-    console.log("placeholder: "+placeholder);
     var objectname = template_name+".html";
     getAuthToken().then(function(token) {
-      console.log("API_ENDPOINT: "+API_ENDPOINT); 
-         console.log("template_container_name: "+template_container_name); 
-         console.log("objectname: "+objectname);
-          console.log("token: "+token);
       request({  
-
         url: API_ENDPOINT + '/' + template_container_name + '/' +objectname ,
         method: 'get',
         headers: {
-          'X-Auth-Token': token
+          'X-Auth-Token': token          
         }
       }, function(error, response, body) {
         if(!error && response.statusCode === 200) {
@@ -153,29 +217,41 @@ function generatepdfdoc(template_container_name, pdf_container_name, template_na
               var tempKey = '{{'+key+'}}';
               var tempValue = placeholderJson[key];
               body = replace(body,tempKey, tempValue);   
-               console.log(body);
+              // console.log(body);
             }
             var promise = new Promise(function(resolve, reject) {
               pdf.create(body).toBuffer(function(err, buffer){ 
+                //pdf.create(body, options).toFile('SampleSecci.pdf',function(err, res) {
               var  bufferString = buffer.toString('base64');
-              //console.log('This is a buffer:', Buffer.isBuffer(buffer));           
-            //    var fileUploadtime = (new Date).getTime();
-             var pdfFileName =  pdf_file_Name;//+"_"+ fileUploadtime + ".pdf"
+             var pdfFileName =  pdf_file_Name;
               var documentType = pdf;
               var fileContext = "";
                 getAuthToken().then(function(token) {
-      getStringAsStream(bufferString).pipe(Base64.decode()).pipe(request({
+        getStringAsStream(bufferString).pipe(Base64.decode()).pipe(request({
+        // user Story 15: ref, brokerId, customerId, digitalRefId, brokerUserId, isUploaded, uploadedBy, uploadedDate
         url: API_ENDPOINT + '/' + pdf_container_name + '/' + pdfFileName,
         method: 'put',
         headers: {
           'X-Auth-Token': token,
           'Content-Type': 'application/pdf',
-          'X-Object-Meta-FileContext': fileContext,
-          'X-Object-Meta-DocumentType': documentType
+          'X-Object-Meta-DocumentId': pdfFileName,
+          'X-Object-Meta-DocumentType': 'pdf',
+          'X-Object-Meta-Reference': reference,
+          'X-Object-Meta-BrokerId': brokerId,
+          'X-Object-Meta-CustomerId': customerId,
+          'X-Object-Meta-DigitalReferenceId': digitalRefId,
+          'X-Object-Meta-BrokerUserId': brokerUserId,
+          'X-Object-Meta-IsUploaded': isUploaded,
+          'X-Object-Meta-UploadedBy': uploadedBy,
+          'X-Object-Meta-DocumentType': uploadedDate
         }
       }, function(error, response, body) {
-          if(!error && response.statusCode == 201) {         return (pdfFileName);
-          } else {        return(error);                   
+          if(!error && response.statusCode == 201) {   
+             
+           //console.log(response);
+           return (response);
+          } else {        
+            return(error);                   
           } 
       }));
   });
@@ -186,23 +262,22 @@ function generatepdfdoc(template_container_name, pdf_container_name, template_na
      //   return(pdfFileName);
             //  }        
         } else {
-          console.log(error);
+         // console.log(error);
          return(error);
         }
       });
     });
 }
-
-  
+ 
 function  convertPDF(doc){
   //store PDF
   var promise = new Promise(function(resolve, reject) {
   pdf.create(templateHtml).toBuffer(function(err, buffer){
    if (err) {
-       console.log(err);
+       //console.log(err);
        reject("error there!" + err);
     } else {
-       console.log(res);
+       //console.log(res);
        resolve(buffer);
     }
   });
