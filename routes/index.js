@@ -113,9 +113,78 @@ router.get('/', function(req, res, next) {
 /*router.get('/generatepdf', function(req, res,next) {
 	 res.send('respond with a resource');
 });*/
-router.post('/GetPDFMetaData', function(req, res) {
-   var pdfContainerName = req.body.pdfcontainername;
-  var pdfFileName = req.body.pdffilename;
+
+router.post('/storedocument', function(req, res) {
+
+  var base64File = req.body.documentBase64;
+  var documentType = req.body.documentType;
+  var fileContext = req.body.context;
+  var pdfFileName = req.body.fileName;
+  var reference = req.body.reference;
+  var brokerId = req.body.brokerId;
+  var customerId = req.body.customerId;
+  var digitalRefId = req.body.digitalRefId;
+  var brokerUserId = req.body.brokerUserId;
+  var isUploaded = req.body.isUploaded;
+  var uploadedBy = req.body.uploadedBy;
+  var uploadedDate = req.body.uploadedDate;
+  var fileUploadtime = (new Date).getTime();
+  var pdfFileName =  pdf_file_Name+"_"+ fileUploadtime + ".pdf"
+  var containername = req.params.containername;
+
+  getAuthToken().then(function(token) {
+    getStringAsStream(base64File).pipe(Base64.decode()).pipe(request({
+      url: API_ENDPOINT + '/' + containername + '/' + pdfFileName,
+      method: 'put',
+      headers: {
+          'X-Auth-Token': token,
+          'Content-Type': 'application/pdf',
+          'X-Object-Meta-FileContext': fileContext,                  
+          'X-Object-Meta-DocumentId': pdfFileName,
+          'X-Object-Meta-DocumentType': 'pdf',
+          'X-Object-Meta-Reference': reference,
+          'X-Object-Meta-BrokerId': brokerId,
+          'X-Object-Meta-CustomerId': customerId,
+          'X-Object-Meta-DigitalReferenceId': digitalRefId,
+          'X-Object-Meta-BrokerUserId': brokerUserId,
+          'X-Object-Meta-IsUploaded': isUploaded,
+          'X-Object-Meta-UploadedBy': uploadedBy,
+          'X-Object-Meta-DocumentType': uploadedDate
+      }
+    }, function(error, response, body) {
+      if(!error && response.statusCode == 201) {
+        res.send(response.headers);
+      } else {
+        console.log(error, body);
+        res.send(body);
+      }
+    }));
+  });
+});
+router.get('/getpdfbyId', function(req, res) {
+   var pdfContainerName = req.headers.pdfcontainername;
+  var pdfFileName = req.headers.pdffilename;
+//var container_name = "SecciDocuments";
+  getAuthToken().then(function(token) {
+    console.log(token);
+    request({
+      url: API_ENDPOINT + '/' + pdfContainerName + '/'+pdfFileName,
+      method: 'get',
+      headers: {
+        'X-Auth-Token': token
+      }
+    }, function (error, response, body) {
+        // OpenStack API returns a 201 to indicate success
+        if (!error ) {
+          res.send(body);
+        }
+    })
+  });
+});
+
+router.get('/getpdfmetadata', function(req, res) {
+   var pdfContainerName = req.headers.pdfcontainername;
+  var pdfFileName = req.headers.pdffilename;
 //var container_name = "SecciDocuments";
   getAuthToken().then(function(token) {
     console.log(token);
@@ -134,7 +203,54 @@ router.post('/GetPDFMetaData', function(req, res) {
   });
 });
 
+router.get('/getpdfListbyMetadata', function(req, res) {
+  var container_name = req.headers.pdfcontainername;
+  var metaData = req.headers.metadata;
+  getAuthToken().then(function(token) {
+      request({
+        url: API_ENDPOINT + '/' + container_name,
+        method: 'get',
+        headers: {
+          'X-Auth-Token': token
+        }
+      }, function(error, response, body) {
+        if(!error && response.statusCode === 200) {     
+            var patt1 = /\n/;
+            var pdfList = body.split(patt1);
+            var details;
+           for (var i=0; i < pdfList.length; i++) {       
+              var url = API_ENDPOINT + '/'+ container_name +'/'+ pdfList[i];
+              console.log(url);
+              getMetadataResponse(url, token, metaData, function(err, body) {
+                if (err) {
+                 return(err);
+                } else {
+                  console.log(details);
+                }
+              });
+              console.log(details);
+            }
+          } else {
+             console.log(error);
+          }
+      })
+   })
+});
+function getMetadataResponse(url, token, pdfList, callback) {    
 
+    request({
+      url: API_ENDPOINT + '/SecciDocuments/Sample_1469118745382.pdf', 
+    // method: 'head',   
+      headers: {
+        'X-Auth-Token': token        
+      }
+    }, function (error, response, body) {
+    if (error || response.statusCode !== 200) {
+      return callback(error || {statusCode: response.statusCode});
+    }
+    callback(null, response.headers);  
+    });
+}
 //router.get('/generatepdf/:templatecontainername/:templatename/:pdfcontainername/:pdffilename', function(req, res) {
   router.post('/generatepdf', function(req, res) {
   //Read the Template From the Container
